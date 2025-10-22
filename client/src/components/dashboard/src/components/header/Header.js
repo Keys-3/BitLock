@@ -19,13 +19,10 @@ const Header = (props) => {
         },
       });
       const name = `${response.data.firstName} ${response.data.lastName}`;
-      // console.log(response)
       setName(name);
       console.log(response.data.profilePicture);
-      //  console.log(name)
       setFile(response.data.profilePicture);
-      console.log(file);
-      //  console.log(window.localStorage.getItem('token'))
+      // console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -44,8 +41,16 @@ const Header = (props) => {
     <div className="bit_dash" id="home">
       <h1>DASHBOARD</h1>
       <div className="bit_dash_box">
-        <div >
-          <img className="bit_dash_image" src={`https://bit-lock.vercel.app/${file}`} srcSet={dp} />
+        <div>
+          <img
+            className="bit_dash_image"
+            // src={`https://bit-lock.vercel.app/${file}`}
+            src={dp}
+            // onError={e => {
+            //   e.target.src = { dp };
+            //   e.onerror = null;
+            // }}
+          />
         </div>
         <div className="bit_dash_name">
           <h3>{`Welcome, ${name}`}</h3>

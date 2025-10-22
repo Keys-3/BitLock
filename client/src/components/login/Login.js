@@ -14,6 +14,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleSignin = async (e) => {
+    console.log("signin hit")
     setIsLoading(true);
     e.preventDefault();
     try {
@@ -24,11 +25,13 @@ const Login = () => {
           password,
         }
       );
+      console.log(response)
       console.log(response.data);
       const token = response.data.token;
       window.localStorage.setItem("token", token);
-      navigate("/dashboard");
+      // navigate("/dashboard");
       setIsLoading(false);
+      window.location.href="/dashboard"
     } catch (error) {
       setError(error.response.data.msg);
       setTimeout(() => {
@@ -39,6 +42,7 @@ const Login = () => {
   };
 
   const handleSignup = async (e) => {
+    console.log("signup hit")
     setIsLoading(true);
     e.preventDefault();
     try {
@@ -50,7 +54,7 @@ const Login = () => {
         }
       );
       console.log(response.data);
-      handleSignin();
+      handleSignin(e);
       setIsLoading(false);
     } catch (error) {
       setError(error.response.data.msg);
@@ -66,7 +70,7 @@ const Login = () => {
     <Components.Bodyy>
       <Components.Container>
         <Components.SignUpContainer signinIn={signIn}>
-          <Components.Form>
+          <Components.Form onSubmit={handleSignup}>
             <Components.Title>Create Account</Components.Title>
             <Components.Input
               type="text"
@@ -82,7 +86,7 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Components.Button onClick={handleSignup}>
+            <Components.Button >
               Sign Up
             </Components.Button>
             {isLoading && <LoadingOverlay />}
@@ -91,7 +95,7 @@ const Login = () => {
         </Components.SignUpContainer>
 
         <Components.SignInContainer signinIn={signIn}>
-          <Components.Form>
+          <Components.Form onSubmit={handleSignin}>
             <Components.Title>Sign in</Components.Title>
             <Components.Input
               type="text"
@@ -109,7 +113,7 @@ const Login = () => {
                 setPassword(e.target.value);
               }}
             />
-            <Components.Button onClick={handleSignin}>
+            <Components.Button>
               Sign In
             </Components.Button>
             {isLoading && <LoadingOverlay />}

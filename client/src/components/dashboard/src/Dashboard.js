@@ -2,31 +2,28 @@ import React from 'react'
 import {Details, Header, Navbar, Storage, Footer} from './components'
 import './dashboard.css'
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 
 const Dashboard = (props) => {
 
   const navigate = useNavigate()
-  const check =() => {
-    if(!props){
-    }
-  }
-  
+  const location = useLocation() 
+  // console.log(location.state)
+  console.log("hi")
+  console.log(props)
   useEffect(()=> {
-    if(!props){
+    if(props.token == null){
       navigate("/signin")
-      // window.location.href = "/signin"
-
-    }
-  })
+      }
+  }, [])
 
   return (
     <div className='App'>
         <div className='gradient__bg'>
           {/* {check} */}
-            <Navbar token={props.token}/>
-            <Header token={props.token}/>
+            <Navbar />
+            <Header/>
         </div>
         <Details/> 
         <Storage/>

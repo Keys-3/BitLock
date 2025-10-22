@@ -6,8 +6,8 @@ const authUser = require("../middleware/Auth.js");
 const upload = require("../middleware/profilePic.js");
 const { User } = require("../db/config.js");
 
-
-Router.post("/signup", async (req, res) => {  const { username, password, role } = req.body;
+Router.post("/signup", async (req, res) => {
+  const { username, password } = req.body;
   const user = await User.findOne({ username });
 
   if (user) {
@@ -18,7 +18,6 @@ Router.post("/signup", async (req, res) => {  const { username, password, role }
     await User.create({
       username,
       password: hashedPass,
-      role,
     });
     res.json({ msg: "user created successfully" });
   }
@@ -31,7 +30,7 @@ Router.post("/login", async (req, res) => {
     const isUser = await bcrypt.compare(password, user.password);
     if (!isUser) {
       res.status(403).json({ msg: "wrong password" });
-      return
+      return;
     }
     const token = jwt.sign({ username }, process.env.JWT_SECRET);
     res.json({ token });
@@ -40,23 +39,28 @@ Router.post("/login", async (req, res) => {
   }
 });
 
-Router.post("/upload", authUser, upload.single("file"), async (req, res) => {
+Router.put("/upload", authUser, upload.single("file"), async (req, res) => {
   const file = req.file;
-  console.log("here")
+  console.log("in upload");
   // const { firstName, lastName } = req.body;
-  const user = await User.findOneAndUpdate(
-    { username: req.username },
-    { profilePicture: file.filename },
-    {new:true, runValidators:true}
-  );
-  user
-    .save()
-    .then((data) => {
-      res.json({msg:"uploaded successfully", data });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  try {
+    const user = await User.findOneAndUpdate(
+      { username: req.username },
+      { profilePicture: file.filename },
+      { new: true, runValidators: true }
+    );
+    user
+      .save()
+      .then((data) => {
+        res.json({ msg: "uploaded successfully", data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    
+  } catch (error) {
+    console.log(error)
+  }
 });
 
 Router.put("/uploadName", authUser, async (req, res) => {
@@ -64,11 +68,11 @@ Router.put("/uploadName", authUser, async (req, res) => {
   const user = await User.findOneAndUpdate(
     { username: req.username },
     { firstName, lastName },
-    {new:true, runValidators:true}
+    { new: true, runValidators: true }
   );
   user
     .save()
-    .then(res.json({msg:"updated successfully"}))
+    .then(res.json({ msg: "updated successfully" }))
     .catch((e) => {
       console.log("operation failed");
     });

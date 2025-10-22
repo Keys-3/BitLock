@@ -14,8 +14,8 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const handleSignin = async (e) => {
-    setIsLoading(true);
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await axios.post(
         "https://bit-lock.vercel.app/user/login",
@@ -27,7 +27,8 @@ const Signup = () => {
       console.log(response.data.token);
       const token = response.data.token;
       window.localStorage.setItem("token", token);
-      navigate("/dashboard");
+      // navigate("/dashboard", {state:{token:token}});
+      window.location.href = "/dashboard"
       setIsLoading(false);
     } catch (error) {
       setError(error.response.data.msg);
@@ -39,8 +40,9 @@ const Signup = () => {
   };
 
   const handleSignup = async (e) => {
-    setIsLoading(true);
     e.preventDefault();
+    console.log("signup hit")
+    setIsLoading(true);
     try {
       const response = await axios.post(
         "https://bit-lock.vercel.app/user/signup",
@@ -50,13 +52,13 @@ const Signup = () => {
         }
       );
       console.log(response.data);
-      handleSignin();
+      handleSignin(e);
       setIsLoading(false);
     } catch (error) {
       setError(error.response.data.msg);
       setTimeout(() => {
-        window.location.reload();
-        navigate("/signin", { replace: true });
+        // window.location.reload();
+        navigate("/signup", { replace: true });
         setIsLoading(false);
       }, 1500);
     }
@@ -66,7 +68,7 @@ const Signup = () => {
     <Components.Bodyy>
       <Components.Container>
         <Components.SignUpContainer signinIn={signIn}>
-          <Components.Form>
+          <Components.Form onSubmit={handleSignup}>
             <Components.Title>Create Account</Components.Title>
             <Components.Input
               type="text"
@@ -82,7 +84,7 @@ const Signup = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Components.Button onClick={handleSignup}>
+            <Components.Button >
               Sign Up
             </Components.Button>
             {isLoading && <LoadingOverlay />}
